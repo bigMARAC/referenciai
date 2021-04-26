@@ -1,9 +1,13 @@
 import { ReferenceController } from './reference'
 import { MissingParamError } from '../errors/missing-param-error'
 
+const makeSut = (): ReferenceController => {
+  return new ReferenceController()
+}
+
 describe('Reference Controller', () => {
   test('Should return 400 if no title is provided ', () => {
-    const sut = new ReferenceController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         author: 'Marcos Emanuel',
@@ -18,7 +22,7 @@ describe('Reference Controller', () => {
     expect(httpResponse.body).toEqual(new MissingParamError('title'))
   })
   test('Should return 400 if no author is provided ', () => {
-    const sut = new ReferenceController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         title: 'Any Title',
