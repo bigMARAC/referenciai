@@ -1,4 +1,5 @@
 import { HttpResponse, HttpRequest } from '../protocols/http'
+import { MissingParamError } from '../errors/missing-param-error'
 
 export class ReferenceController {
   handle (httpRequest: HttpRequest): HttpResponse {
@@ -6,13 +7,13 @@ export class ReferenceController {
     if (!title) {
       return {
         statusCode: 400,
-        body: new Error('Missing param: title')
+        body: new MissingParamError('title')
       }
     }
     if (!author) {
       return {
         statusCode: 400,
-        body: new Error('Missing param: author')
+        body: new MissingParamError('author')
       }
     }
   }

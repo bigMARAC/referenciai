@@ -1,4 +1,5 @@
 import { ReferenceController } from './reference'
+import { MissingParamError } from '../errors/missing-param-error'
 
 describe('Reference Controller', () => {
   test('Should return 400 if no title is provided ', () => {
@@ -14,7 +15,7 @@ describe('Reference Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: title'))
+    expect(httpResponse.body).toEqual(new MissingParamError('title'))
   })
   test('Should return 400 if no author is provided ', () => {
     const sut = new ReferenceController()
@@ -29,6 +30,6 @@ describe('Reference Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: author'))
+    expect(httpResponse.body).toEqual(new MissingParamError('author'))
   })
 })
