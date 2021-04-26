@@ -1,0 +1,18 @@
+import { ReferenceController } from './reference'
+
+describe('Reference Controller', () => {
+  test('Should return 400 if no title is provided ', () => {
+    const sut = new ReferenceController()
+    const httpRequest = {
+      body: {
+        author: 'Marcos Emanuel',
+        subtitle: 'Any Subtitle',
+        edition: '1',
+        place: 'Any Place',
+        date: '26/04/2021'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+  })
+})
