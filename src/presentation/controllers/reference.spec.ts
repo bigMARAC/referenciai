@@ -2,6 +2,7 @@ import { ReferenceController } from './reference'
 import { MissingParamError } from '../errors/missing-param-error'
 import { InvalidParamError } from '../errors/invalid-param-error'
 import { NameValidator } from '../protocols/name-validator'
+import { ServerError } from '../errors/server-error'
 
 interface SutTypes {
   sut: ReferenceController
@@ -85,5 +86,27 @@ describe('Reference Controller', () => {
     }
     sut.handle(httpRequest)
     expect(isValidSpy).toHaveBeenCalledWith('Marcos Emanuel')
+  })
+  test('Should return 500 if NameValidator throws', () => {
+    class NameValidatorStub implements NameValidator {
+      isValid (name: string): boolean {
+        throw new Error()
+      }
+    }
+    const nameValidatorStub = new NameValidatorStub()
+    const sut = new ReferenceController(nameValidatorStub)
+    const httpRequest = {
+      body: {
+        author: 'Marcos Emanuel',
+        title: 'Any Title',
+        subtitle: 'Any Subtitle',
+        edition: '1',
+        place: 'Any Place',
+        date: '26/04/2021'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
