@@ -16,4 +16,19 @@ describe('Reference Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new Error('Missing param: title'))
   })
+  test('Should return 400 if no author is provided ', () => {
+    const sut = new ReferenceController()
+    const httpRequest = {
+      body: {
+        title: 'Any Title',
+        subtitle: 'Any Subtitle',
+        edition: '1',
+        place: 'Any Place',
+        date: '26/04/2021'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new Error('Missing param: author'))
+  })
 })
