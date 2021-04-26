@@ -10,14 +10,6 @@ const makeNameValidator = (): NameValidator => {
   }
   return new NameValidatorStub()
 }
-const makeNameValidatorWithError = (): NameValidator => {
-  class NameValidatorStub implements NameValidator {
-    isValid (name: string): boolean {
-      throw new Error()
-    }
-  }
-  return new NameValidatorStub()
-}
 
 interface SutTypes {
   sut: ReferenceController
@@ -98,8 +90,10 @@ describe('Reference Controller', () => {
     expect(isValidSpy).toHaveBeenCalledWith('Marcos Emanuel')
   })
   test('Should return 500 if NameValidator throws', () => {
-    const nameValidatorStub = makeNameValidatorWithError()
-    const sut = new ReferenceController(nameValidatorStub)
+    const { sut, nameValidatorStub } = makeSut()
+    jest.spyOn(nameValidatorStub, 'isValid').mockImplementationOnce(() => {
+      throw new Error()
+    })
     const httpRequest = {
       body: {
         author: 'Marcos Emanuel',
