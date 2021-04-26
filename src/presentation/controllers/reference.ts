@@ -1,5 +1,7 @@
+import { HttpResponse, HttpRequest } from '../protocols/http'
+
 export class ReferenceController {
-  handle (httpRequest: any): any {
+  handle (httpRequest: HttpRequest): HttpResponse {
     const { title, author } = httpRequest.body
     if (!title) {
       return {
