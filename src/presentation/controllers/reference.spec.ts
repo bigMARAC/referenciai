@@ -70,4 +70,20 @@ describe('Reference Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidParamError('author'))
   })
+  test('Should call NameValidator with correct name', () => {
+    const { sut, nameValidatorStub } = makeSut()
+    const isValidSpy = jest.spyOn(nameValidatorStub, 'isValid')
+    const httpRequest = {
+      body: {
+        author: 'Marcos Emanuel',
+        title: 'Any Title',
+        subtitle: 'Any Subtitle',
+        edition: '1',
+        place: 'Any Place',
+        date: '26/04/2021'
+      }
+    }
+    sut.handle(httpRequest)
+    expect(isValidSpy).toHaveBeenCalledWith('Marcos Emanuel')
+  })
 })
