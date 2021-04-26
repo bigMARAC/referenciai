@@ -16,7 +16,8 @@ export class ReferenceController implements Controller {
           return badRequest(new MissingParamError(field))
         }
       }
-      const isValid = this.nameValidator.isValid(httpRequest.body.author)
+      const { author } = httpRequest.body
+      const isValid = this.nameValidator.isValid(author)
       if (!isValid) {
         return badRequest(new InvalidParamError('author'))
       }
