@@ -2,18 +2,30 @@ import { ReferenceController } from './reference'
 import { MissingParamError, InvalidParamError, ServerError } from '../errors'
 import { NameValidator } from '../protocols'
 
+const makeNameValidator = (): NameValidator => {
+  class NameValidatorStub implements NameValidator {
+    isValid (name: string): boolean {
+      return true
+    }
+  }
+  return new NameValidatorStub()
+}
+const makeNameValidatorWithError = (): NameValidator => {
+  class NameValidatorStub implements NameValidator {
+    isValid (name: string): boolean {
+      throw new Error()
+    }
+  }
+  return new NameValidatorStub()
+}
+
 interface SutTypes {
   sut: ReferenceController
   nameValidatorStub: NameValidator
 }
 
 const makeSut = (): SutTypes => {
-  class NameValidatorStub implements NameValidator {
-    isValid (name: string): boolean {
-      return true
-    }
-  }
-  const nameValidatorStub = new NameValidatorStub()
+  const nameValidatorStub = makeNameValidator()
   const sut = new ReferenceController(nameValidatorStub)
   return {
     sut,
@@ -86,12 +98,7 @@ describe('Reference Controller', () => {
     expect(isValidSpy).toHaveBeenCalledWith('Marcos Emanuel')
   })
   test('Should return 500 if NameValidator throws', () => {
-    class NameValidatorStub implements NameValidator {
-      isValid (name: string): boolean {
-        throw new Error()
-      }
-    }
-    const nameValidatorStub = new NameValidatorStub()
+    const nameValidatorStub = makeNameValidatorWithError()
     const sut = new ReferenceController(nameValidatorStub)
     const httpRequest = {
       body: {
