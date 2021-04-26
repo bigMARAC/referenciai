@@ -1,6 +1,6 @@
 import { ReferenceController } from './reference'
 import { MissingParamError, InvalidParamError, ServerError } from '../errors'
-import { NameValidator } from '../protocols/name-validator'
+import { NameValidator } from '../protocols'
 
 interface SutTypes {
   sut: ReferenceController
