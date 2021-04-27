@@ -24,7 +24,7 @@ export class ReferenceController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('author'))
       }
-      this.createReference.add({
+      const reference = this.createReference.add({
         author,
         title,
         subtitle,
@@ -33,6 +33,10 @@ export class ReferenceController implements Controller {
         company,
         date
       })
+      return {
+        statusCode: 200,
+        body: reference
+      }
     } catch (error) {
       return serverError()
     }
