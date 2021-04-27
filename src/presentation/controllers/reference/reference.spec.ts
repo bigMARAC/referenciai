@@ -146,4 +146,23 @@ describe('Reference Controller', () => {
       date: '26/04/2021'
     })
   })
+  test('Should return 500 if CreateReference throws', () => {
+    const { sut, createReferenceStub } = makeSut()
+    jest.spyOn(createReferenceStub, 'add').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpRequest = {
+      body: {
+        author: 'Marcos Emanuel',
+        title: 'Any Title',
+        subtitle: 'Any Subtitle',
+        edition: '1',
+        place: 'Any Place',
+        date: '26/04/2021'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
 })
