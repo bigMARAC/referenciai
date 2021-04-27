@@ -13,9 +13,9 @@ const makeNameValidator = (): NameValidator => {
 
 const makeCreateReference = (): CreateReference => {
   class CreateReferenceStub implements CreateReference {
-    add (account: CreateReferenceModel): string {
+    async add (account: CreateReferenceModel): Promise<string> {
       const fakeReference = 'EMANUEL, Marcos. Title: Subtitle. 1. Place: Company, 26/04/2021'
-      return fakeReference
+      return await new Promise(resolve => resolve(fakeReference))
     }
   }
   return new CreateReferenceStub()
@@ -39,7 +39,7 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Reference Controller', () => {
-  test('Should return 400 if no title is provided', () => {
+  test('Should return 400 if no title is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -50,11 +50,11 @@ describe('Reference Controller', () => {
         date: '26/04/2021'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamError('title'))
   })
-  test('Should return 400 if no author is provided', () => {
+  test('Should return 400 if no author is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -65,11 +65,11 @@ describe('Reference Controller', () => {
         date: '26/04/2021'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamError('author'))
   })
-  test('Should return 400 if an invalid name is provided', () => {
+  test('Should return 400 if an invalid name is provided', async () => {
     const { sut, nameValidatorStub } = makeSut()
     jest.spyOn(nameValidatorStub, 'isValid').mockReturnValueOnce(false)
     const httpRequest = {
@@ -82,11 +82,11 @@ describe('Reference Controller', () => {
         date: '26/04/2021'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidParamError('author'))
   })
-  test('Should call NameValidator with correct name', () => {
+  test('Should call NameValidator with correct name', async () => {
     const { sut, nameValidatorStub } = makeSut()
     const isValidSpy = jest.spyOn(nameValidatorStub, 'isValid')
     const httpRequest = {
@@ -99,10 +99,10 @@ describe('Reference Controller', () => {
         date: '26/04/2021'
       }
     }
-    sut.handle(httpRequest)
+    await sut.handle(httpRequest)
     expect(isValidSpy).toHaveBeenCalledWith('Marcos Emanuel')
   })
-  test('Should return 500 if NameValidator throws', () => {
+  test('Should return 500 if NameValidator throws', async () => {
     const { sut, nameValidatorStub } = makeSut()
     jest.spyOn(nameValidatorStub, 'isValid').mockImplementationOnce(() => {
       throw new Error()
@@ -117,11 +117,11 @@ describe('Reference Controller', () => {
         date: '26/04/2021'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
-  test('Should call CreateReference with correct values', () => {
+  test('Should call CreateReference with correct values', async () => {
     const { sut, createReferenceStub } = makeSut()
     const addSpy = jest.spyOn(createReferenceStub, 'add')
     const httpRequest = {
@@ -135,7 +135,7 @@ describe('Reference Controller', () => {
         date: '26/04/2021'
       }
     }
-    sut.handle(httpRequest)
+    await sut.handle(httpRequest)
     expect(addSpy).toHaveBeenCalledWith({
       author: 'Marcos Emanuel',
       title: 'Any Title',
@@ -146,10 +146,10 @@ describe('Reference Controller', () => {
       date: '26/04/2021'
     })
   })
-  test('Should return 500 if CreateReference throws', () => {
+  test('Should return 500 if CreateReference throws', async () => {
     const { sut, createReferenceStub } = makeSut()
-    jest.spyOn(createReferenceStub, 'add').mockImplementationOnce(() => {
-      throw new Error()
+    jest.spyOn(createReferenceStub, 'add').mockImplementationOnce(async () => {
+      return await new Promise((resolve, reject) => reject(new Error()))
     })
     const httpRequest = {
       body: {
@@ -161,11 +161,11 @@ describe('Reference Controller', () => {
         date: '26/04/2021'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
-  test('Should return 200 if valid data is provided', () => {
+  test('Should return 200 if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -178,7 +178,7 @@ describe('Reference Controller', () => {
         date: '26/04/2021'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toBe('EMANUEL, Marcos. Title: Subtitle. 1. Place: Company, 26/04/2021')
   })

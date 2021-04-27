@@ -11,7 +11,7 @@ export class ReferenceController implements Controller {
     this.createReference = createReference
   }
 
-  handle (httpRequest: HttpRequest): HttpResponse {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const required = ['title', 'author']
       for (const field of required) {
@@ -24,7 +24,7 @@ export class ReferenceController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('author'))
       }
-      const reference = this.createReference.add({
+      const reference = await this.createReference.add({
         author,
         title,
         subtitle,
