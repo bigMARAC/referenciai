@@ -1,7 +1,6 @@
-import { HttpResponse, HttpRequest, Controller, NameValidator } from '../protocols'
-import { MissingParamError, InvalidParamError } from '../errors'
-import { badRequest, serverError } from '../helpers/http-helper'
-import { CreateReference } from '../../domain/usecases/create-reference'
+import { HttpResponse, HttpRequest, Controller, NameValidator, CreateReference } from './reference-protocols'
+import { MissingParamError, InvalidParamError } from '../../errors'
+import { badRequest, serverError } from '../../helpers/http-helper'
 
 export class ReferenceController implements Controller {
   private readonly nameValidator: NameValidator

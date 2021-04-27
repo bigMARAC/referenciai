@@ -1,7 +1,6 @@
 import { ReferenceController } from './reference'
-import { MissingParamError, InvalidParamError, ServerError } from '../errors'
-import { NameValidator } from '../protocols'
-import { CreateReference, CreateReferenceModel } from '../../domain/usecases/create-reference'
+import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
+import { NameValidator, CreateReference, CreateReferenceModel } from './reference-protocols'
 
 const makeNameValidator = (): NameValidator => {
   class NameValidatorStub implements NameValidator {
