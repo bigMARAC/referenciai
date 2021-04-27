@@ -9,5 +9,5 @@ export interface CreateReferenceModel {
 }
 
 export interface CreateReference {
-  add: (account: CreateReferenceModel) => Promise<string>
+  add: (data: CreateReferenceModel) => Promise<string>
 }
