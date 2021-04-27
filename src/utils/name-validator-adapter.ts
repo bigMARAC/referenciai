@@ -1,8 +1,12 @@
 import { NameValidator } from '../presentation/protocols/name-validator'
 
 export class NameValidatorAdapter implements NameValidator {
+  private readonly validator: RegExp
+  constructor (validator: RegExp) {
+    this.validator = validator
+  }
+
   isValid (name: string): boolean {
-    const validator = /^[A-Z][a-z\u00C0-\u00FF']+(\s[A-Z][a-z\u00C0-\u00FF']+)+$/
-    return validator.test(name)
+    return this.validator.test(name)
   }
 }
