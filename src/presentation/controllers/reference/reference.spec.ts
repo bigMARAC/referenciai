@@ -14,7 +14,7 @@ const makeNameValidator = (): NameValidator => {
 const makeCreateReference = (): CreateReference => {
   class CreateReferenceStub implements CreateReference {
     add (account: CreateReferenceModel): string {
-      const fakeReference = 'EMANUEL, Marcos.'
+      const fakeReference = 'EMANUEL, Marcos. Title: Subtitle. 1. Place: Company, 26/04/2021'
       return fakeReference
     }
   }
@@ -164,5 +164,22 @@ describe('Reference Controller', () => {
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+  test('Should return 200 if valid data is provided', () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        author: 'Marcos Emanuel',
+        title: 'Title',
+        subtitle: 'Subtitle',
+        edition: '1',
+        place: 'Place',
+        company: 'Company',
+        date: '26/04/2021'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toBe('EMANUEL, Marcos. Title: Subtitle. 1. Place: Company, 26/04/2021')
   })
 })
