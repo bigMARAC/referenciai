@@ -7,13 +7,17 @@ interface SutTypes {
   makerStub: Maker
 }
 
-const makeSut = (): SutTypes => {
-  class MakerStub {
+const makeMaker = (): Maker => {
+  class MakerStub implements Maker {
     async make (data: CreateReferenceModel): Promise<string> {
       return await new Promise(resolve => resolve('reference'))
     }
   }
-  const makerStub = new MakerStub()
+  return new MakerStub()
+}
+
+const makeSut = (): SutTypes => {
+  const makerStub = makeMaker()
   const sut = new DbCreateReference(makerStub)
 
   return {
