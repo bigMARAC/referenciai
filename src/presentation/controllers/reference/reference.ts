@@ -1,6 +1,6 @@
 import { HttpResponse, HttpRequest, Controller, NameValidator, CreateReference } from './reference-protocols'
 import { MissingParamError, InvalidParamError } from '../../errors'
-import { badRequest, serverError } from '../../helpers/http-helper'
+import { badRequest, serverError, ok } from '../../helpers/http-helper'
 
 export class ReferenceController implements Controller {
   private readonly nameValidator: NameValidator
@@ -33,10 +33,7 @@ export class ReferenceController implements Controller {
         company,
         date
       })
-      return {
-        statusCode: 200,
-        body: reference
-      }
+      return ok(reference)
     } catch (error) {
       return serverError()
     }
