@@ -12,6 +12,6 @@ export class DbCreateReference implements CreateReference {
   async add (referenceData: CreateReferenceModel): Promise<string> {
     const reference = await this.maker.make(referenceData)
     await this.createReferenceRepository.add(Object.assign({}, referenceData, { reference }))
-    return await new Promise(resolve => resolve(''))
+    return await new Promise(resolve => resolve(reference))
   }
 }
