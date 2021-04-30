@@ -117,4 +117,18 @@ describe('DbCreateReference', () => {
     const promise = sut.add(referenceData)
     await expect(promise).rejects.toThrow()
   })
+  test('Should return a reference on success', async () => {
+    const { sut } = makeSut()
+    const referenceData = {
+      author: 'Marcos Emanuel',
+      title: 'Title',
+      subtitle: 'Subtitle',
+      edition: '1',
+      place: 'Place',
+      company: 'Company',
+      date: '26/04/2021'
+    }
+    const reference = await sut.add(referenceData)
+    expect(reference).toBe('reference')
+  })
 })
