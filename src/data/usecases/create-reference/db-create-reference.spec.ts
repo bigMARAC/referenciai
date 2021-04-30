@@ -1,6 +1,4 @@
-import { CreateReferenceModel } from '../../../domain/usecases/create-reference'
-import { Maker } from '../../protocols/maker'
-import { DbCreateReference } from './db-create-reference'
+import { CreateReferenceModel, DbCreateReference, Maker } from './db-create-reference-protocols'
 
 interface SutTypes {
   sut: DbCreateReference

@@ -1,5 +1,5 @@
 import { CreateReference, CreateReferenceModel } from '../../../domain/usecases/create-reference'
-import { Maker } from '../../protocols/maker'
+import { Maker } from './db-create-reference-protocols'
 
 export class DbCreateReference implements CreateReference {
   private readonly maker: Maker
