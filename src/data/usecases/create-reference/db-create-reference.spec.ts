@@ -1,9 +1,5 @@
-import { CreateReferenceModel, DbCreateReference, Maker } from './db-create-reference-protocols'
-
-interface SutTypes {
-  sut: DbCreateReference
-  makerStub: Maker
-}
+import { DbCreateReference } from './db-create-reference'
+import { CreateReferenceModel, Maker, CreateReferenceRepository } from './db-create-reference-protocols'
 
 const makeMaker = (): Maker => {
   class MakerStub implements Maker {
@@ -14,13 +10,40 @@ const makeMaker = (): Maker => {
   return new MakerStub()
 }
 
+const makeCreateReferenceReporsitory = (): CreateReferenceRepository => {
+  class CreateReferenceRepositoryStub implements CreateReferenceRepository {
+    async add (referenceData: CreateReferenceModel): Promise<string> {
+      const fakeReference = {
+        author: 'Marcos Emanuel',
+        title: 'Title',
+        subtitle: 'Subtitle',
+        edition: '1',
+        place: 'Place',
+        company: 'Company',
+        date: '26/04/2021',
+        reference: 'reference'
+      }
+      return await new Promise(resolve => resolve(fakeReference.reference))
+    }
+  }
+  return new CreateReferenceRepositoryStub()
+}
+
+interface SutTypes {
+  sut: DbCreateReference
+  makerStub: Maker
+  createReferenceReporitoryStub: CreateReferenceRepository
+}
+
 const makeSut = (): SutTypes => {
   const makerStub = makeMaker()
-  const sut = new DbCreateReference(makerStub)
+  const createReferenceReporitoryStub = makeCreateReferenceReporsitory()
+  const sut = new DbCreateReference(makerStub, createReferenceReporitoryStub)
 
   return {
     sut,
-    makerStub
+    makerStub,
+    createReferenceReporitoryStub
   }
 }
 
@@ -54,5 +77,29 @@ describe('DbCreateReference', () => {
     }
     const promise = sut.add(referenceData)
     await expect(promise).rejects.toThrow()
+  })
+  test('Should call CreateReferenceRepository with correct values', async () => {
+    const { sut, createReferenceReporitoryStub } = makeSut()
+    const addSpy = jest.spyOn(createReferenceReporitoryStub, 'add')
+    const referenceData = {
+      author: 'Marcos Emanuel',
+      title: 'Title',
+      subtitle: 'Subtitle',
+      edition: '1',
+      place: 'Place',
+      company: 'Company',
+      date: '26/04/2021'
+    }
+    await sut.add(referenceData)
+    expect(addSpy).toHaveBeenCalledWith({
+      author: 'Marcos Emanuel',
+      title: 'Title',
+      subtitle: 'Subtitle',
+      edition: '1',
+      place: 'Place',
+      company: 'Company',
+      date: '26/04/2021',
+      reference: 'reference'
+    })
   })
 })
