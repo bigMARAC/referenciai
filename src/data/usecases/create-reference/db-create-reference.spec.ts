@@ -102,4 +102,19 @@ describe('DbCreateReference', () => {
       reference: 'reference'
     })
   })
+  test('Should throw if CreateReferenceRepository throws', async () => {
+    const { sut, createReferenceReporitoryStub } = makeSut()
+    jest.spyOn(createReferenceReporitoryStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const referenceData = {
+      author: 'Marcos Emanuel',
+      title: 'Title',
+      subtitle: 'Subtitle',
+      edition: '1',
+      place: 'Place',
+      company: 'Company',
+      date: '26/04/2021'
+    }
+    const promise = sut.add(referenceData)
+    await expect(promise).rejects.toThrow()
+  })
 })
