@@ -6,6 +6,7 @@ export interface CreateReferenceModel {
   place: string
   company: string
   date: string
+  reference?: string
 }
 
 export interface CreateReference {
